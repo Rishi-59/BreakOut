@@ -709,15 +709,42 @@ The project is considered complete when:
 
 # 22. Requirements Freeze
 
-Before starting implementation, the following decisions must be finalized:
+The following decisions are finalized before implementation.
 
-- [ ] Window dimensions
-- [ ] Ball launch control
-- [ ] Exact brick progression per level
-- [ ] Exact maximum level
-- [ ] Exact paddle dimensions
-- [ ] Exact default ball speed
-- [ ] Whether paddle position affects ball direction
+- [x] Window dimensions
+  - Vertical rectangle.
+  - Height: Use the maximum practical vertical size available on the laptop.
+  - Width: Approximately half of the screen width.
+  - Exact dimensions will be determined during initial setup.
+
+- [x] Ball launch control
+  - `Up Arrow` launches the ball.
+  - Ball remains stationary on the paddle until launched.
+
+- [x] Brick progression
+  - Maximum: 10 levels.
+  - Levels 1–5:
+    - Add 1 additional row of bricks per level.
+  - Levels 6–10:
+    - Add 2 additional rows of bricks per level.
+  - Brick layout must remain within the available game area.
+
+- [x] Maximum level
+  - 10 levels.
+
+- [x] Paddle dimensions
+  - Paddle width: approximately 1/5–1/6 of the game window width.
+  - Paddle height will be determined during implementation.
+
+- [x] Default ball speed
+  - Use a starting speed that feels appropriate for Turtle's update/movement system.
+  - The exact numeric value will be tuned during implementation.
+  - Treat the default speed as a constant so it can be reset whenever a new ball is created.
+
+- [x] Paddle influence on ball direction
+  - Yes.
+  - The paddle's position relative to the ball's impact point should influence the ball's horizontal direction.
+  - This is required for meaningful player control.
 
 Once implementation begins, **do not introduce new gameplay features casually**.
 
