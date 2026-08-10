@@ -1,4 +1,4 @@
-SCREEN_WIDTH = 700
+SCREEN_WIDTH = 650
 SCREEN_HEIGHT = 900
 
 BACKGROUND_COLOR = "DarkBlue"
@@ -15,7 +15,7 @@ PADDLE_STRETCH_WIDTH = 6
 PADDLE_STRETCH_HEIGHT = 1
 PADDLE_BOTTOM_MARGIN = 30
 PADDLE_MOVEMENT_DISTANCE = 20
-PADDLE_WALL_MARGIN = 40
+PADDLE_WALL_MARGIN = 30
 
 # ball.py
 BALL_COLOR = "Red"
@@ -28,3 +28,23 @@ RIGHT_BORDER = SCREEN_WIDTH / 2 - 10
 LEFT_BORDER = -SCREEN_WIDTH / 2 + 10
 TOP_BORDER = SCREEN_HEIGHT / 2 - 10
 BOTTOM_BORDER = -SCREEN_HEIGHT / 2 + 10
+
+# brick.py
+BRICK_STRETCH_WIDTH = 3
+BRICK_STRETCH_HEIGHT = 1
+BRICK_COLORS = [
+    "red",
+    "orangered",
+    "orange",
+    "gold",
+    "yellow",
+    "chartreuse",
+    "lime",
+    "springgreen",
+    "cyan",
+    "deepskyblue",
+    "dodgerblue",
+    "magenta",
+    "hotpink",
+    "violet",
+]
