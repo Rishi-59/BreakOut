@@ -17,9 +17,10 @@ PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2) * 20
 
 class Game:
     def __init__(self):
+        self.level_count = 1
         self.ball = Ball()
         self.paddle = Paddle()
-        self.level = Level(1)
+        self.level = Level(self.level_count)
         pass
 
     def paddle_ball_collision(self):
@@ -75,6 +76,13 @@ class Game:
                 self.level.remove_brick(brick)
                 break
 
+    def next_level(self):
+        self.ball.reset_position()
+        self.paddle.reset()
+
+        self.level_count += 1
+        self.level = Level(self.level_count)
+
     def game_loop(self, screen):
 
         if self.ball.is_launched:
@@ -82,7 +90,13 @@ class Game:
             self.ball.check_collision()
             self.paddle_ball_collision()
             self.ball_brick_collision()
+            if self.level.check_level_end():
+                self.next_level()
         else:
             self.ball.follow(self.paddle)
 
         screen.ontimer(lambda: self.game_loop(screen), 10)
+
+    # def clear_level(self):
+    #     for brick in self.level.bricks[:]:
+    #         self.level.remove_brick(brick)

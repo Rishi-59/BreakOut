@@ -62,12 +62,13 @@ class Ball:
         """Move the ball with paddle before launching."""
         self.ball.setx(paddle.xcor())
 
-    def reset(self):
+    def reset_position(self):
         """Return the ball to its starting position."""
         self.ball.goto(0, BALL_Y)
+        self.is_launched = False
         self.dx = 0
         self.dy = BALL_MOVEMENT_DISTANCE
-        self.is_launched = False
+
 
     def bounce_from_paddle(self, ratio):
         self.dx = -ratio * BALL_MOVEMENT_DISTANCE
