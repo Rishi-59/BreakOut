@@ -24,3 +24,9 @@ class Brick:
 
     def destroy(self):
         self.brick.hideturtle()
+
+    def xcor(self):
+        return self.brick.xcor()
+
+    def ycor(self):
+        return self.brick.ycor()
