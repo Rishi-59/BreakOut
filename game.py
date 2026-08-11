@@ -1,6 +1,7 @@
 from ball import Ball
 from paddle import Paddle
 from level import Level
+from scoreboard import ScoreBoard
 
 from constants import (
     BALL_MOVEMENT_DISTANCE,
@@ -21,6 +22,7 @@ class Game:
         self.ball = Ball()
         self.paddle = Paddle()
         self.level = Level(self.level_count)
+        self.scoreboard = ScoreBoard()
         self.lives = STARTING_LIVES
         self.is_game_over = False
         pass
@@ -59,7 +61,8 @@ class Game:
             )
 
             if horizontal_collision and vertical_collision:
-
+                self.scoreboard.brick_destroyed()
+                self.update_ui()
                 x_overlap = (
                         BRICK_WIDTH / 2 + BALL_RADIUS
                         - abs(self.ball.xcor() - brick.xcor())
@@ -82,21 +85,35 @@ class Game:
         self.ball.reset_position()
         self.paddle.reset()
 
+        self.scoreboard.level_completed(self.level_count)
+        self.update_ui()
+
         self.level_count += 1
         self.level = Level(self.level_count)
 
     def game_over(self):
+        self.scoreboard.update_high_score()
+        self.update_ui()
         self.is_game_over = True
 
     def handle_ball_loss(self):
         if self.ball.is_lost():
             self.lives -= 1
+            self.scoreboard.ball_lost()
+            self.update_ui()
 
             if self.lives > 0:
                 self.ball.reset_position()
                 self.paddle.reset()
             else:
                 self.game_over()
+
+    def update_ui(self):
+        self.scoreboard.update_display(
+            self.level_count,
+            self.lives
+        )
+
 
     def game_loop(self, screen):
         if not self.is_game_over:
