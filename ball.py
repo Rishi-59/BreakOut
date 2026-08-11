@@ -62,22 +62,24 @@ class Ball:
         """Move the ball with paddle before launching."""
         self.ball.setx(paddle.xcor())
 
-    def paddle_collision(self, paddle):
-        """Check and handle collisions with the paddle."""
-        # Check y level with acceptable margin
-        if paddle.ycor() >= self.ball.ycor() >= paddle.ycor() - BALL_PADDLE_COLLISION_MARGIN :
-            ratio = (self.ball.xcor() - paddle.xcor()) / PADDLE_HALF_WIDTH
-
-            if -1 <= ratio <= 1:
-                # collision
-                self.dx = -ratio * BALL_MOVEMENT_DISTANCE
-                self.dy = -self.dy
-
-
-
     def reset(self):
         """Return the ball to its starting position."""
         self.ball.goto(0, BALL_Y)
         self.dx = 0
         self.dy = BALL_MOVEMENT_DISTANCE
         self.is_launched = False
+
+    def bounce_from_paddle(self, ratio):
+        self.dx = -ratio * BALL_MOVEMENT_DISTANCE
+        self.dy = -self.dy
+
+    def bounce_from_brick(self):
+        pass
+
+    def xcor(self):
+        """Return the x coordinate of the ball."""
+        return self.ball.xcor()
+
+    def ycor(self):
+        """Return the y coordinate of the ball."""
+        return self.ball.ycor()
