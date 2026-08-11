@@ -1,4 +1,5 @@
 from ball import Ball
+from brick import Brick
 from paddle import Paddle
 from level import Level
 
@@ -55,8 +56,23 @@ class Game:
             )
 
             if horizontal_collision and vertical_collision:
+
+                x_overlap = (
+                        BRICK_WIDTH / 2 + BALL_RADIUS
+                        - abs(self.ball.xcor() - brick.xcor())
+                )
+
+                y_overlap = (
+                        BRICK_HEIGHT / 2 + BALL_RADIUS
+                        - abs(self.ball.ycor() - brick.ycor())
+                )
+
+                if x_overlap < y_overlap:
+                    self.ball.bounce_horizontal()
+                else:
+                    self.ball.bounce_vertical()
+
                 self.level.remove_brick(brick)
-                self.ball.bounce_from_brick()
                 break
 
     def game_loop(self, screen):

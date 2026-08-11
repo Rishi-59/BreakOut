@@ -73,6 +73,12 @@ class Ball:
         self.dx = -ratio * BALL_MOVEMENT_DISTANCE
         self.dy = -self.dy
 
+    def bounce_horizontal(self):
+        self.dx = -self.dx
+
+    def bounce_vertical(self):
+        self.dy = -self.dy
+
     def bounce_from_brick(self):
         pass
 
