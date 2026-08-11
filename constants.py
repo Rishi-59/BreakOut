@@ -9,6 +9,9 @@ LEFT_BTN = "Left"
 RIGHT_BTN = "Right"
 BALL_LAUNCH_BTN = "space"
 
+# game.py
+STARTING_LIVES = 3
+
 # constants.py
 PADDLE_COLOR = "White"
 PADDLE_STRETCH_WIDTH = 6

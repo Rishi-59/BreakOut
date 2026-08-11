@@ -1,5 +1,4 @@
 from ball import Ball
-from brick import Brick
 from paddle import Paddle
 from level import Level
 
@@ -9,7 +8,8 @@ from constants import (
     PADDLE_STRETCH_WIDTH,
     BRICK_WIDTH,
     BRICK_HEIGHT,
-    BALL_RADIUS
+    BALL_RADIUS,
+    STARTING_LIVES
 )
 
 PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2) * 20
@@ -21,6 +21,8 @@ class Game:
         self.ball = Ball()
         self.paddle = Paddle()
         self.level = Level(self.level_count)
+        self.lives = STARTING_LIVES
+        self.is_game_over = False
         pass
 
     def paddle_ball_collision(self):
@@ -83,20 +85,36 @@ class Game:
         self.level_count += 1
         self.level = Level(self.level_count)
 
-    def game_loop(self, screen):
+    def game_over(self):
+        self.is_game_over = True
 
-        if self.ball.is_launched:
-            self.ball.move()
-            self.ball.check_collision()
-            self.paddle_ball_collision()
-            self.ball_brick_collision()
-            if self.level.check_level_end():
-                self.next_level()
-        else:
-            self.ball.follow(self.paddle)
+    def handle_ball_loss(self):
+        if self.ball.is_lost():
+            self.lives -= 1
+
+            if self.lives > 0:
+                self.ball.reset_position()
+                self.paddle.reset()
+            else:
+                self.game_over()
+
+    def game_loop(self, screen):
+        if not self.is_game_over:
+            if self.ball.is_launched:
+                self.ball.move()
+                self.ball.check_collision()
+                self.paddle_ball_collision()
+                self.ball_brick_collision()
+                self.handle_ball_loss()
+
+                if self.level.check_level_end():
+                    self.next_level()
+
+            else:
+                self.ball.follow(self.paddle)
 
         screen.ontimer(lambda: self.game_loop(screen), 10)
 
-    # def clear_level(self):
-    #     for brick in self.level.bricks[:]:
-    #         self.level.remove_brick(brick)
+# def clear_level(self):
+#     for brick in self.level.bricks[:]:
+#         self.level.remove_brick(brick)

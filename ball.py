@@ -8,12 +8,13 @@ from constants import (
     TOP_BORDER,
     LEFT_BORDER,
     RIGHT_BORDER,
-    BALL_PADDLE_COLLISION_MARGIN, PADDLE_STRETCH_WIDTH
+    PADDLE_STRETCH_WIDTH,
+    BOTTOM_BORDER
 )
 
-
 BALL_Y = -SCREEN_HEIGHT / 2 + BALL_BOTTOM_MARGIN
-PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2 ) * 20
+PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2) * 20
+
 
 class Ball:
     def __init__(self):
@@ -52,11 +53,10 @@ class Ball:
 
         # Left and right walls
         if (
-            self.ball.xcor() >= RIGHT_BORDER
-            or self.ball.xcor() <= LEFT_BORDER
+                self.ball.xcor() >= RIGHT_BORDER
+                or self.ball.xcor() <= LEFT_BORDER
         ):
             self.dx = -self.dx
-
 
     def follow(self, paddle):
         """Move the ball with paddle before launching."""
@@ -69,7 +69,6 @@ class Ball:
         self.dx = 0
         self.dy = BALL_MOVEMENT_DISTANCE
 
-
     def bounce_from_paddle(self, ratio):
         self.dx = -ratio * BALL_MOVEMENT_DISTANCE
         self.dy = -self.dy
@@ -80,8 +79,8 @@ class Ball:
     def bounce_vertical(self):
         self.dy = -self.dy
 
-    def bounce_from_brick(self):
-        pass
+    def is_lost(self):
+        return self.ycor() < BOTTOM_BORDER
 
     def xcor(self):
         """Return the x coordinate of the ball."""
