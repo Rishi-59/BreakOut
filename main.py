@@ -26,4 +26,6 @@ screen.onkey(game.ball.launch, BALL_LAUNCH_BTN)
 # screen.onkey(game.clear_level, "c")
 
 game.game_loop(screen)
+game.increase_ball_speed(screen)
+
 screen.mainloop()

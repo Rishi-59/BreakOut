@@ -4,8 +4,6 @@ from level import Level
 from scoreboard import ScoreBoard
 
 from constants import (
-    BALL_MOVEMENT_DISTANCE,
-    BALL_PADDLE_COLLISION_MARGIN,
     PADDLE_STRETCH_WIDTH,
     BRICK_WIDTH,
     BRICK_HEIGHT,
@@ -25,17 +23,23 @@ class Game:
         self.scoreboard = ScoreBoard()
         self.lives = STARTING_LIVES
         self.is_game_over = False
-        pass
 
     def paddle_ball_collision(self):
         """Check and handle collisions with the paddle."""
-        # Check y level with acceptable margin
-        if self.paddle.ycor() >= self.ball.ycor() >= self.paddle.ycor() - BALL_PADDLE_COLLISION_MARGIN:
-            ratio = (self.ball.xcor() - self.paddle.xcor()) / PADDLE_HALF_WIDTH
+        # Only a downward-moving ball can strike the top of the paddle.
+        # Using the ball's bounds also makes this work at increased speed.
+        paddle_top = self.paddle.ycor() + BALL_RADIUS
+        ball_bottom = self.ball.ycor() - BALL_RADIUS
+        horizontal_distance = abs(self.ball.xcor() - self.paddle.xcor())
 
-            if -1 <= ratio <= 1:
-                # collision
-                self.ball.bounce_from_paddle(ratio)
+        if (
+            self.ball.dy < 0
+            and ball_bottom <= paddle_top
+            and self.ball.ycor() >= self.paddle.ycor()
+            and horizontal_distance <= PADDLE_HALF_WIDTH + BALL_RADIUS
+        ):
+            ratio = max(-1, min(1, (self.ball.xcor() - self.paddle.xcor()) / PADDLE_HALF_WIDTH))
+            self.ball.bounce_from_paddle(ratio)
 
     def ball_brick_collision(self):
         for brick in self.level.bricks:
@@ -82,6 +86,7 @@ class Game:
                 break
 
     def next_level(self):
+        self.ball.update_speed('level')
         self.ball.reset_position()
         self.paddle.reset()
 
@@ -103,7 +108,7 @@ class Game:
             self.update_ui()
 
             if self.lives > 0:
-                self.ball.reset_position()
+                self.ball.reset_position(reset_speed=True)
                 self.paddle.reset()
             else:
                 self.game_over()
@@ -114,18 +119,34 @@ class Game:
             self.lives
         )
 
+    def increase_ball_speed(self, screen):
+        if not self.is_game_over:
+            self.ball.update_speed("time")
+
+        screen.ontimer(
+            lambda: self.increase_ball_speed(screen),
+            10_000
+        )
 
     def game_loop(self, screen):
         if not self.is_game_over:
             if self.ball.is_launched:
-                self.ball.move()
-                self.ball.check_collision()
-                self.paddle_ball_collision()
-                self.ball_brick_collision()
-                self.handle_ball_loss()
+                # Test collisions after every small increment.  This prevents
+                # a faster ball from tunnelling through bricks or the paddle.
+                steps = self.ball.movement_steps()
+                for _ in range(steps):
+                    self.ball.move_step(steps)
+                    self.ball.check_collision()
+                    self.paddle_ball_collision()
+                    self.ball_brick_collision()
 
-                if self.level.check_level_end():
-                    self.next_level()
+                    if self.ball.is_lost():
+                        self.handle_ball_loss()
+                        break
+
+                    if self.level.check_level_end():
+                        self.next_level()
+                        break
 
             else:
                 self.ball.follow(self.paddle)
