@@ -73,10 +73,10 @@ The game must contain:
 - Ball should be white.
 - Ball should move continuously once launched.
 - Ball should bounce when it hits:
-  - Left wall
-  - Right wall
-  - Top wall
-  - Paddle
+    - Left wall
+    - Right wall
+    - Top wall
+    - Paddle
 - Ball should destroy a brick when it collides with one.
 - Ball should disappear / be considered lost when it passes below the paddle.
 
@@ -239,10 +239,10 @@ After the final level is completed:
 
 ## Scoring Rules
 
-| Event | Score Change |
-|---|---:|
-| Destroy brick | +10 |
-| Lose ball | -5 |
+| Event          |  Score Change |
+|----------------|--------------:|
+| Destroy brick  |           +10 |
+| Lose ball      |            -5 |
 | Complete level | `level × 100` |
 
 ### Example
@@ -297,8 +297,8 @@ When the game ends:
 
 1. Compare current score with high score.
 2. If current score is greater:
-   - Update high score.
-   - Save it to the text file.
+    - Update high score.
+    - Save it to the text file.
 3. Otherwise, keep the existing high score.
 
 ---
@@ -475,7 +475,8 @@ The **Restart** button should be available when appropriate.
 - Use a separate accent color.
 - Button text should be clearly readable.
 
-The visual design should remain simple. Do not spend excessive development time on aesthetics before the game logic works.
+The visual design should remain simple. Do not spend excessive development time on aesthetics before the game logic
+works.
 
 ---
 
@@ -553,6 +554,7 @@ Confirm that the window opens and closes correctly.
 ### Test
 
 Verify:
+
 - Left movement works.
 - Right movement works.
 - Paddle cannot leave the screen.
@@ -582,6 +584,7 @@ Verify the ball can continuously bounce around the play area.
 ### Test
 
 Verify:
+
 - Ball destroys bricks.
 - Destroyed bricks disappear.
 - Score increases correctly.
@@ -599,6 +602,7 @@ Verify:
 ### Test
 
 Verify:
+
 - Ball loss works.
 - Replacement ball works.
 - Game ends after the final ball.
@@ -678,32 +682,32 @@ Only after the game is fully functional:
 
 The project is considered complete when:
 
-- [ ] Game window works
-- [ ] Paddle moves correctly
-- [ ] Ball moves correctly
-- [ ] Ball bounces from walls
-- [ ] Ball bounces from paddle
-- [ ] Bricks are generated
-- [ ] Bricks are destroyed by the ball
-- [ ] Brick count increases between levels
-- [ ] Score system works
-- [ ] Ball-loss penalty works
-- [ ] Level-completion bonus works
-- [ ] Three-ball system works
-- [ ] Replacement ball works
-- [ ] Ball speed resets correctly
-- [ ] Level speed increase works
-- [ ] 10-second speed increase works
-- [ ] Next Level functionality works
-- [ ] Maximum level works
-- [ ] Game Over works
-- [ ] Game Complete works
-- [ ] Restart works
-- [ ] High score is saved
-- [ ] High score is loaded
-- [ ] High score is displayed
-- [ ] UI is readable
-- [ ] Game colors are visually consistent
+- [x] Game window works
+- [x] Paddle moves correctly
+- [x] Ball moves correctly
+- [x] Ball bounces from walls
+- [x] Ball bounces from paddle
+- [x] Bricks are generated
+- [x] Bricks are destroyed by the ball
+- [x] Brick count increases between levels
+- [x] Score system works
+- [x] Ball-loss penalty works
+- [x] Level-completion bonus works
+- [x] Three-ball system works
+- [x] Replacement ball works
+- [x] Ball speed resets correctly
+- [x] Level speed increase works
+- [x] 10-second speed increase works
+- [x] Next Level functionality works
+- [x] Maximum level works
+- [x] Game Over works
+- [x] Game Complete works
+- [x] Restart works
+- [x] High score is saved
+- [x] High score is loaded
+- [x] High score is displayed
+- [x] UI is readable
+- [x] Game colors are visually consistent
 
 ---
 
@@ -712,39 +716,39 @@ The project is considered complete when:
 The following decisions are finalized before implementation.
 
 - [x] Window dimensions
-  - Vertical rectangle.
-  - Height: Use the maximum practical vertical size available on the laptop.
-  - Width: Approximately half of the screen width.
-  - Exact dimensions will be determined during initial setup.
+    - Vertical rectangle.
+    - Height: Use the maximum practical vertical size available on the laptop.
+    - Width: Approximately half of the screen width.
+    - Exact dimensions will be determined during initial setup.
 
 - [x] Ball launch control
-  - `Up Arrow` launches the ball.
-  - Ball remains stationary on the paddle until launched.
+    - `Up Arrow` launches the ball.
+    - Ball remains stationary on the paddle until launched.
 
 - [x] Brick progression
-  - Maximum: 10 levels.
-  - Levels 1–5:
-    - Add 1 additional row of bricks per level.
-  - Levels 6–10:
-    - Add 2 additional rows of bricks per level.
-  - Brick layout must remain within the available game area.
+    - Maximum: 10 levels.
+    - Levels 1–5:
+        - Add 1 additional row of bricks per level.
+    - Levels 6–10:
+        - Add 2 additional rows of bricks per level.
+    - Brick layout must remain within the available game area.
 
 - [x] Maximum level
-  - 10 levels.
+    - 10 levels.
 
 - [x] Paddle dimensions
-  - Paddle width: approximately 1/5–1/6 of the game window width.
-  - Paddle height will be determined during implementation.
+    - Paddle width: approximately 1/5–1/6 of the game window width.
+    - Paddle height will be determined during implementation.
 
 - [x] Default ball speed
-  - Use a starting speed that feels appropriate for Turtle's update/movement system.
-  - The exact numeric value will be tuned during implementation.
-  - Treat the default speed as a constant so it can be reset whenever a new ball is created.
+    - Use a starting speed that feels appropriate for Turtle's update/movement system.
+    - The exact numeric value will be tuned during implementation.
+    - Treat the default speed as a constant so it can be reset whenever a new ball is created.
 
 - [x] Paddle influence on ball direction
-  - Yes.
-  - The paddle's position relative to the ball's impact point should influence the ball's horizontal direction.
-  - This is required for meaningful player control.
+    - Yes.
+    - The paddle's position relative to the ball's impact point should influence the ball's horizontal direction.
+    - This is required for meaningful player control.
 
 Once implementation begins, **do not introduce new gameplay features casually**.
 
