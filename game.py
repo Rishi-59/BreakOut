@@ -1,3 +1,5 @@
+import turtle
+
 from ball import Ball
 from paddle import Paddle
 from level import Level
@@ -30,6 +32,16 @@ class Game:
         self.setup_controls()
         self.waiting_for_next_level = False
         self.is_game_over = False
+
+        self.retry_button = turtle.Turtle()
+        self.retry_button.shape("square")
+        self.retry_button.shapesize(stretch_wid=1, stretch_len=5)
+        self.retry_button.color("white")
+        self.retry_button.penup()
+        self.retry_button.goto(0, 0)
+        self.retry_button.hideturtle()
+
+        self.retry_button.onclick(self.handle_retry)
 
     def paddle_ball_collision(self):
         """Check and handle collisions with the paddle."""
@@ -107,7 +119,10 @@ class Game:
     def game_over(self):
         self.scoreboard.update_high_score()
         self.update_ui()
+
         self.is_game_over = True
+        self.disable_controls()
+        self.retry_button.showturtle()
 
     def handle_ball_loss(self):
         if self.ball.is_lost():
@@ -144,10 +159,7 @@ class Game:
 
     def setup_controls(self):
         self.screen.listen()
-
-        self.screen.onkey(self.paddle.move_left, LEFT_BTN)
-        self.screen.onkey(self.paddle.move_right, RIGHT_BTN)
-        self.screen.onkey(self.ball.launch, BALL_LAUNCH_BTN)
+        self.enable_controls()
         self.screen.onkey(self.clear_level, "c")
 
     def disable_controls(self):
@@ -161,6 +173,25 @@ class Game:
         self.screen.onkey(self.paddle.move_left, LEFT_BTN)
         self.screen.onkey(self.paddle.move_right, RIGHT_BTN)
         self.screen.onkey(self.ball.launch, BALL_LAUNCH_BTN)
+
+    def handle_retry(self, x, y):
+        self.retry_button.hideturtle()
+
+        self.level_count = 1
+        self.lives = STARTING_LIVES
+        self.is_game_over = False
+        self.waiting_for_next_level = False
+
+        self.scoreboard.reset_score()
+
+        self.ball.reset_position(reset_speed=True)
+        self.paddle.reset()
+
+        self.level = Level(self.level_count)
+        self.level.set_next_level_callback(self.handle_next_level)
+
+        self.enable_controls()
+        self.update_ui()
 
     def game_loop(self, screen):
         if not self.is_game_over:
