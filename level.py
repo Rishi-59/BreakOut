@@ -1,4 +1,5 @@
 from brick import Brick
+import turtle
 
 from constants import (
     DIFFICULTY_STEPUP,
@@ -17,6 +18,15 @@ class Level:
         self.level_number = level_number
         self.bricks = []
         self.create_bricks()
+
+        self.next_level_button = turtle.Turtle()
+        self.next_level_button.shape("square")
+        self.next_level_button.shapesize(stretch_wid=1, stretch_len=5)
+        self.next_level_button.color("white")
+        self.next_level_button.penup()
+        self.next_level_button.goto(0, 0)
+
+        self.next_level_button.hideturtle()
 
     @staticmethod
     def get_offset(row):
@@ -69,3 +79,12 @@ class Level:
 
     def check_level_end(self):
         return not self.bricks
+
+    def set_next_level_callback(self, callback):
+        self.next_level_button.onclick(callback)
+
+    def show_next_level_button(self):
+        self.next_level_button.showturtle()
+
+    def hide_next_level_button(self):
+        self.next_level_button.hideturtle()

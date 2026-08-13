@@ -8,20 +8,27 @@ from constants import (
     BRICK_WIDTH,
     BRICK_HEIGHT,
     BALL_RADIUS,
-    STARTING_LIVES
+    STARTING_LIVES,
+    LEFT_BTN,
+    RIGHT_BTN,
+    BALL_LAUNCH_BTN
 )
 
 PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2) * 20
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, screen):
+        self.screen = screen
         self.level_count = 1
         self.ball = Ball()
         self.paddle = Paddle()
         self.level = Level(self.level_count)
+        self.level.set_next_level_callback(self.handle_next_level)
         self.scoreboard = ScoreBoard()
         self.lives = STARTING_LIVES
+        self.setup_controls()
+        self.waiting_for_next_level = False
         self.is_game_over = False
 
     def paddle_ball_collision(self):
@@ -33,10 +40,10 @@ class Game:
         horizontal_distance = abs(self.ball.xcor() - self.paddle.xcor())
 
         if (
-            self.ball.dy < 0
-            and ball_bottom <= paddle_top
-            and self.ball.ycor() >= self.paddle.ycor()
-            and horizontal_distance <= PADDLE_HALF_WIDTH + BALL_RADIUS
+                self.ball.dy < 0
+                and ball_bottom <= paddle_top
+                and self.ball.ycor() >= self.paddle.ycor()
+                and horizontal_distance <= PADDLE_HALF_WIDTH + BALL_RADIUS
         ):
             ratio = max(-1, min(1, (self.ball.xcor() - self.paddle.xcor()) / PADDLE_HALF_WIDTH))
             self.ball.bounce_from_paddle(ratio)
@@ -95,6 +102,7 @@ class Game:
 
         self.level_count += 1
         self.level = Level(self.level_count)
+        self.level.set_next_level_callback(self.handle_next_level)
 
     def game_over(self):
         self.scoreboard.update_high_score()
@@ -128,9 +136,35 @@ class Game:
             10_000
         )
 
+    def handle_next_level(self, x, y):
+        self.waiting_for_next_level = False
+        self.enable_controls()
+        self.level.hide_next_level_button()
+        self.next_level()
+
+    def setup_controls(self):
+        self.screen.listen()
+
+        self.screen.onkey(self.paddle.move_left, LEFT_BTN)
+        self.screen.onkey(self.paddle.move_right, RIGHT_BTN)
+        self.screen.onkey(self.ball.launch, BALL_LAUNCH_BTN)
+        self.screen.onkey(self.clear_level, "c")
+
+    def disable_controls(self):
+        # Turtle's Screen API removes a key callback when ``None`` is passed;
+        # unlike Tk directly, it has no public ``unbind`` method.
+        self.screen.onkey(None, LEFT_BTN)
+        self.screen.onkey(None, RIGHT_BTN)
+        self.screen.onkey(None, BALL_LAUNCH_BTN)
+
+    def enable_controls(self):
+        self.screen.onkey(self.paddle.move_left, LEFT_BTN)
+        self.screen.onkey(self.paddle.move_right, RIGHT_BTN)
+        self.screen.onkey(self.ball.launch, BALL_LAUNCH_BTN)
+
     def game_loop(self, screen):
         if not self.is_game_over:
-            if self.ball.is_launched:
+            if self.ball.is_launched and not self.waiting_for_next_level:
                 # Test collisions after every small increment.  This prevents
                 # a faster ball from tunnelling through bricks or the paddle.
                 steps = self.ball.movement_steps()
@@ -145,14 +179,22 @@ class Game:
                         break
 
                     if self.level.check_level_end():
-                        self.next_level()
+                        self.waiting_for_next_level = True
+                        self.disable_controls()
+                        self.level.show_next_level_button()
                         break
 
             else:
                 self.ball.follow(self.paddle)
 
+        screen.update()
         screen.ontimer(lambda: self.game_loop(screen), 10)
 
-# def clear_level(self):
-#     for brick in self.level.bricks[:]:
-#         self.level.remove_brick(brick)
+    def clear_level(self):
+        for brick in self.level.bricks[:]:
+            self.level.remove_brick(brick)
+
+        self.waiting_for_next_level = True
+        self.disable_controls()
+        self.ball.reset_position()
+        self.level.show_next_level_button()

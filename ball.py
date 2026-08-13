@@ -38,6 +38,7 @@ class Ball:
         """Launch the ball."""
         self.is_launched = True
 
+
     def movement_steps(self):
         """Move the ball according to its current direction and speed.
 
