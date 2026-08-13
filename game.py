@@ -13,7 +13,12 @@ from constants import (
     STARTING_LIVES,
     LEFT_BTN,
     RIGHT_BTN,
-    BALL_LAUNCH_BTN
+    BALL_LAUNCH_BTN,
+    BUTTON_COLOR,
+    BUTTON_TEXT_COLOR,
+    BUTTON_FONT,
+    BUTTON_STRETCH_WIDTH,
+    BUTTON_STRETCH_HEIGHT,
 )
 
 PADDLE_HALF_WIDTH = (PADDLE_STRETCH_WIDTH / 2) * 20
@@ -35,11 +40,19 @@ class Game:
 
         self.retry_button = turtle.Turtle()
         self.retry_button.shape("square")
-        self.retry_button.shapesize(stretch_wid=1, stretch_len=5)
-        self.retry_button.color("white")
+        self.retry_button.shapesize(
+            stretch_wid=BUTTON_STRETCH_HEIGHT,
+            stretch_len=BUTTON_STRETCH_WIDTH,
+        )
+        self.retry_button.color(BUTTON_COLOR)
         self.retry_button.penup()
         self.retry_button.goto(0, 0)
         self.retry_button.hideturtle()
+
+        self.retry_label = turtle.Turtle(visible=False)
+        self.retry_label.penup()
+        self.retry_label.color(BUTTON_TEXT_COLOR)
+        self.retry_label.goto(0, -5)
 
         self.retry_button.onclick(self.handle_retry)
 
@@ -123,6 +136,8 @@ class Game:
         self.is_game_over = True
         self.disable_controls()
         self.retry_button.showturtle()
+        self.retry_label.clear()
+        self.retry_label.write("RETRY", align="center", font=BUTTON_FONT)
 
     def handle_ball_loss(self):
         if self.ball.is_lost():
@@ -142,12 +157,12 @@ class Game:
             self.lives
         )
 
-    def increase_ball_speed(self, screen):
+    def increase_ball_speed(self):
         if not self.is_game_over:
             self.ball.update_speed("time")
 
-        screen.ontimer(
-            lambda: self.increase_ball_speed(screen),
+        self.screen.ontimer(
+            lambda: self.increase_ball_speed(),
             10_000
         )
 
@@ -176,6 +191,7 @@ class Game:
 
     def handle_retry(self, x, y):
         self.retry_button.hideturtle()
+        self.retry_label.clear()
 
         self.level_count = 1
         self.lives = STARTING_LIVES
@@ -193,7 +209,7 @@ class Game:
         self.enable_controls()
         self.update_ui()
 
-    def game_loop(self, screen):
+    def game_loop(self):
         if not self.is_game_over:
             if self.ball.is_launched and not self.waiting_for_next_level:
                 # Test collisions after every small increment.  This prevents
@@ -218,8 +234,8 @@ class Game:
             else:
                 self.ball.follow(self.paddle)
 
-        screen.update()
-        screen.ontimer(lambda: self.game_loop(screen), 10)
+        self.screen.update()
+        self.screen.ontimer(lambda: self.game_loop(), 10)
 
     def clear_level(self):
         for brick in self.level.bricks[:]:

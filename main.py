@@ -24,7 +24,7 @@ game = Game(screen)
 screen.listen()
 
 
-game.game_loop(screen)
-game.increase_ball_speed(screen)
+game.game_loop()
+game.increase_ball_speed()
 
 screen.mainloop()

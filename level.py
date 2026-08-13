@@ -10,6 +10,11 @@ from constants import (
     BRICK_START_X,
     BRICK_WIDTH,
     BRICK_HEIGHT,
+    BUTTON_COLOR,
+    BUTTON_TEXT_COLOR,
+    BUTTON_FONT,
+    BUTTON_STRETCH_WIDTH,
+    BUTTON_STRETCH_HEIGHT,
 )
 
 
@@ -21,11 +26,18 @@ class Level:
 
         self.next_level_button = turtle.Turtle()
         self.next_level_button.shape("square")
-        self.next_level_button.shapesize(stretch_wid=1, stretch_len=5)
-        self.next_level_button.color("white")
+        self.next_level_button.shapesize(
+            stretch_wid=BUTTON_STRETCH_HEIGHT,
+            stretch_len=BUTTON_STRETCH_WIDTH,
+        )
+        self.next_level_button.color(BUTTON_COLOR)
         self.next_level_button.penup()
         self.next_level_button.goto(0, 0)
 
+        self.next_level_label = turtle.Turtle(visible=False)
+        self.next_level_label.penup()
+        self.next_level_label.color(BUTTON_TEXT_COLOR)
+        self.next_level_label.goto(0, -5)
         self.next_level_button.hideturtle()
 
     @staticmethod
@@ -85,6 +97,9 @@ class Level:
 
     def show_next_level_button(self):
         self.next_level_button.showturtle()
+        self.next_level_label.clear()
+        self.next_level_label.write("NEXT LEVEL", align="center", font=BUTTON_FONT)
 
     def hide_next_level_button(self):
         self.next_level_button.hideturtle()
+        self.next_level_label.clear()
